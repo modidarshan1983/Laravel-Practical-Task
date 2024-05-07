@@ -15,7 +15,9 @@ class AppointmentController extends Controller
     public function index()
     {
         $user = Auth::user();
-       
+        if(!$user){
+            return response()->json(['message' => 'Unauthorized user'], 400);
+        }
         $appointments = $user->appointments()->with('user', 'healthCare')->get();
        
     
@@ -86,6 +88,9 @@ class AppointmentController extends Controller
     {
         // Check if cancellation is allowed (e.g., not within 24 hours of appointment time)
         $user = Auth::user();
+        if(!$user){
+            return response()->json(['message' => 'Unauthorized user'], 400);
+        }
         $cancellationTime = Carbon::now()->addHours(24);
         $appointmentTime = Carbon::parse($appointment->appointment_start_time);
 
